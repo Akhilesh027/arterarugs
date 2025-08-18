@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/images', express.static('public/images'));
 app.use(bodyParser.json());
-// MongoDB Connection
+
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -39,13 +39,13 @@ const razorpay = new Razorpay({
 // ✅ Create Razorpay Order (TEST MODE)
 app.post("/api/payment/orders", async (req, res) => {
   try {
-    const { amount } = req.body; // amount in INR rupees
+    const { amount } = req.body;
 
     const options = {
-      amount: amount * 100, // amount in paise
+      amount: amount * 100, 
       currency: "INR",
       receipt: "receipt#1",
-      payment_capture: 1,   // auto capture
+      payment_capture: 1,   
     };
 
     const order = await razorpay.orders.create(options);
