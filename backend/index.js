@@ -32,8 +32,8 @@ mongoose
   .catch((err) => console.log(err));
 
 const razorpay = new Razorpay({
-  key_id: "rzp_test_1DP5mmOlF5G5ag",       // Razorpay Sample Test Key ID
-  key_secret: "mmtfCWEXAMPLESECRET"        // Razorpay Sample Test Secret
+  key_id: "rzp_live_R6u450nVIrAeZt",       // Razorpay Sample Test Key ID
+  key_secret: "DcrMDwQJRrfo7hIF3zWUg5TY"        // Razorpay Sample Test Secret
 });
 
 // ✅ Create Razorpay Order (TEST MODE)
