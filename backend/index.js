@@ -32,29 +32,28 @@ mongoose
   .catch((err) => console.log(err));
 
 const razorpay = new Razorpay({
-  key_id: "rzp_test_1DP5mmOlF5G5ag",       // Razorpay Sample Test Key ID
-  key_secret: "mmtfCWEXAMPLESECRET"        // Razorpay Sample Test Secret
+  key_id: "rzp_live_R6u450nVIrAeZt",       // Razorpay Sample Test Key ID
+  key_secret: "DcrMDwQJRrfo7hIF3zWUg5TY"        // Razorpay Sample Test Secret
 });
 
-// ✅ Create Razorpay Order (TEST MODE)
 app.post("/api/payment/orders", async (req, res) => {
   try {
     const { amount } = req.body;
 
     const options = {
-      amount: amount * 100, 
+      amount: amount * 100,    // in paise
       currency: "INR",
-      receipt: "receipt#1",
-      payment_capture: 1,   
+      receipt: `receipt_${Math.floor(Math.random() * 10000)}`,
+      payment_capture: 1
     };
 
     const order = await razorpay.orders.create(options);
-    res.status(200).json({ orderId: order.id });
+    res.status(200).json({ orderId: order.id, amount: options.amount });
   } catch (error) {
     console.error("Error creating order:", error);
-    res.status(401).json({
-      statusCode: 401,
-      error: { code: "BAD_REQUEST_ERROR", description: "Authentication failed" },
+    res.status(500).json({
+      statusCode: 500,
+      message: "Something went wrong in Razorpay Order Creation"
     });
   }
 });
