@@ -7,7 +7,6 @@ const jwt = require("jsonwebtoken");
 const Razorpay = require("razorpay");
 const SECRET_KEY = "MY_SECRET_KEY"; // you can put in .env
 const Product = require('./models/Product.js');
-const upload = require('./utils/multer.js');
 const User = require("./models/User");
 const Cart = require('./models/Cart.js');
 const Wishlist = require('./models/Wishlist.js');
@@ -16,12 +15,13 @@ const Contact = require("./models/Contact.js");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 const path = require("path");
+const multer = require('multer');
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/images', express.static(path.join(__dirname, 'public/images')));
+app.use("/uploads", express.static("uploads")); // Serve static files from uploads folder
 app.use(bodyParser.json());
 
 mongoose
@@ -127,17 +127,42 @@ app.get("/api/user/:id", async (req, res) => {
   const user = await User.findById(req.params.id);
   res.json(user);
 });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Directory to save images
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}_${file.originalname}`);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  const fileTypes = /jpeg|jpg|png|gif/;
+  const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimeType = fileTypes.test(file.mimetype);
+
+  if (extName && mimeType) {
+    cb(null, true);
+  } else {
+    cb("Error: Images only!");
+  }
+};
+
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit per image
+});
 app.post('/api/addproduct', upload.array('images'), async (req, res) => {
   try {
     // Process uploaded files
-    const images = req.files.map(file => 
-      `/images/${file.filename}`
-    );
+        const imagePaths = req.files.map((file) => file.path);
+
 
     // Create product
     const product = new Product({
       ...req.body,
-      images,
+      imagePaths,
       price: Number(req.body.price),
       originalPrice: Number(req.body.originalPrice),
       stock: Number(req.body.stock),
