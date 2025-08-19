@@ -102,6 +102,25 @@ app.post("/api/auth/login", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+app.delete('/api/user/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
 // Example protected route
 app.get("/api/user/:id", async (req, res) => {
   const user = await User.findById(req.params.id);
@@ -142,6 +161,14 @@ app.post('/api/addproduct', upload.array('images'), async (req, res) => {
 });
 // Get all products
 app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+app.get('/api/Order', async (req, res) => {
   try {
     const products = await Product.find();
     res.json(products);
@@ -433,5 +460,5 @@ app.get('/api/admin/recent-orders', async (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
