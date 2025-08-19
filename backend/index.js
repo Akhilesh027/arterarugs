@@ -156,13 +156,13 @@ const upload = multer({
 app.post('/api/addproduct', upload.array('images'), async (req, res) => {
   try {
     // Process uploaded files
-        const imagePaths = req.files.map((file) => file.path);
+        const images = req.files.map((file) => file.path);
 
 
     // Create product
     const product = new Product({
       ...req.body,
-      imagePaths,
+      images,
       price: Number(req.body.price),
       originalPrice: Number(req.body.originalPrice),
       stock: Number(req.body.stock),
