@@ -156,7 +156,7 @@ const upload = multer({
 app.post('/api/addproduct', upload.array('images'), async (req, res) => {
   try {
     // Process uploaded files
-        const images = req.files.map((file) => file.path);
+        const images = req.files.map((file) => `/uploads/${file.filename}`);
 
 
     // Create product
