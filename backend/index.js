@@ -15,6 +15,7 @@ const Order = require('./models/Order.js');
 const Contact = require("./models/Contact.js");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
+const path = require("path");
 const app = express();
 
 app.use(cors());
